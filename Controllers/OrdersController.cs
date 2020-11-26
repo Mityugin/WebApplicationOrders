@@ -38,7 +38,7 @@ namespace WebApplicationOrders.Controllers
             }
         }
 
-        // PUT: api/Orders/5
+        // PUT: api/Orders/
         public HttpResponseMessage Put(int Number, [FromBody] Order order)
         {
             using (Orders_DBContext dbContext = new Orders_DBContext())
