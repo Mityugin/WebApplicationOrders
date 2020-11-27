@@ -19,11 +19,53 @@ namespace WebApplicationOrders.Controllers
             }
         }
 
-        public Order Get(int Number)
+        [HttpGet]
+        [Route("~/api/orders/{ClientNumber:int}")]
+        public IEnumerable<Order> Get(int ClientNumber)
         {
             using (Orders_DBContext dbContext = new Orders_DBContext())
             {
-                return dbContext.Orders.FirstOrDefault(e => e.Number == Number);
+                //return dbContext.Orders.Where(e => e.ClientNumber == ClientNumber);
+
+                var orders = dbContext.Orders;
+                foreach (var order in orders)
+                {
+                    if (order.ClientNumber == ClientNumber)
+                    {
+                        yield return order;
+                    }
+
+                }
+
+            }
+        }
+
+        [HttpGet]
+        [Route("~/api/orders/{Number:int}/goods")]
+        public IEnumerable<Good> GetDetail(int Number)
+        {
+            using (Orders_DBContext dbContext = new Orders_DBContext())
+            {
+                //return dbContext.Orders.Where(e => e.ClientNumber == ClientNumber);
+
+                var orders = dbContext.Orders;
+                foreach (var order in orders)
+                {
+                    if (order.Number == Number)
+                    {
+                        var goods = dbContext.Goods;
+                        foreach (var good in goods)
+                        {
+                            if (order.Description.Contains(good.Number.ToString()))
+                            {
+                                yield return good;
+                            }
+                        }
+                        
+                    }
+
+                }
+
             }
         }
 
@@ -44,6 +86,7 @@ namespace WebApplicationOrders.Controllers
             using (Orders_DBContext dbContext = new Orders_DBContext())
             {
                 var order1 = dbContext.Orders.Find(Number);
+                order1.ClientNumber = order.ClientNumber;
                 order1.Description = order.Description;
                 order1.TotalPrice = order.TotalPrice;
 

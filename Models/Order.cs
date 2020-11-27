@@ -17,5 +17,6 @@ namespace WebApplicationOrders.Models
         public int Number { get; set; }
         public Nullable<decimal> TotalPrice { get; set; }
         public string Description { get; set; }
+        public Nullable<int> ClientNumber { get; set; }
     }
 }

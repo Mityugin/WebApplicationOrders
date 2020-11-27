@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="Models.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="Models.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Clients">
           <Key>
             <PropertyRef Name="Number" />
@@ -28,6 +28,7 @@
           </Key>
           <Property Name="Number" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="TotalPrice" Type="decimal" Precision="20" Scale="2" />
+          <Property Name="ClientNumber" Type="int" />
           <Property Name="Description" Type="nvarchar" MaxLength="250" />
         </EntityType>
         <EntityContainer Name="ModelsStoreContainer">
@@ -35,8 +36,7 @@
           <EntitySet Name="Goods" EntityType="Self.Goods" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Orders" EntityType="Self.Orders" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="Models" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -64,6 +64,7 @@
           <Property Name="Number" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="TotalPrice" Type="Decimal" Precision="20" Scale="2" />
           <Property Name="Description" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="ClientNumber" Type="Int32" />
         </EntityType>
         <EntityContainer Name="Orders_DBContext" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Clients" EntityType="Self.Client" />
@@ -98,6 +99,7 @@
           <EntitySetMapping Name="Orders">
             <EntityTypeMapping TypeName="Models.Order">
               <MappingFragment StoreEntitySet="Orders">
+                <ScalarProperty Name="ClientNumber" ColumnName="ClientNumber" />
                 <ScalarProperty Name="Number" ColumnName="Number" />
                 <ScalarProperty Name="TotalPrice" ColumnName="TotalPrice" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
