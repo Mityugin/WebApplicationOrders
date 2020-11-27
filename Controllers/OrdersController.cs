@@ -11,6 +11,7 @@ namespace WebApplicationOrders.Controllers
 {
     public class OrdersController : ApiController
     {
+        // GET ORDERS
         public IEnumerable<Order> Get()
         {
             using (Orders_DBContext dbContext = new Orders_DBContext())
@@ -19,6 +20,7 @@ namespace WebApplicationOrders.Controllers
             }
         }
 
+        // GET ORDERS by CLIENTNUMBER
         [HttpGet]
         [Route("~/api/orders/{ClientNumber:int}")]
         public IEnumerable<Order> Get(int ClientNumber)
@@ -40,6 +42,7 @@ namespace WebApplicationOrders.Controllers
             }
         }
 
+        // GET PRODUCTS in ORDER
         [HttpGet]
         [Route("~/api/orders/{Number:int}/goods")]
         public IEnumerable<Good> GetDetail(int Number)
@@ -74,9 +77,48 @@ namespace WebApplicationOrders.Controllers
         {
             using (Orders_DBContext dbContext = new Orders_DBContext())
             {
-                dbContext.Orders.Add(order);
+                Order order1 = new Order();
+                order1.ClientNumber = order.ClientNumber;
+                order1.Description = order.Description;
+                
+                order1.TotalPrice = 0;
+
+                var goods = dbContext.Goods;
+                foreach (var good in goods)
+                {
+                    if (order1.Description.Contains(good.Number.ToString()))
+                    {
+                        order1.TotalPrice += good.Price;
+                    }
+                }
+
+                // Если Клиент VIP уменьшаем общую сумму заказа на размер скидки, но не более 50%
+                if (ClientIsVip(order1.ClientNumber))
+                {
+                    var FullPrice = order1.TotalPrice;
+
+                    var orders = dbContext.Orders;
+                    foreach (var oldorder in orders)
+                    {
+                        if (oldorder.ClientNumber == order1.ClientNumber)
+                        {
+                            if (order1.TotalPrice > FullPrice / 2)
+                            {
+                                order1.TotalPrice -= 1;
+                            }
+
+                        }
+
+                    }
+
+                }
+
+                
+
+                dbContext.Orders.Add(order1);
                 dbContext.SaveChanges();
-                return Request.CreateResponse(HttpStatusCode.Created, order);
+
+                return Request.CreateResponse(HttpStatusCode.Created, order1);
             }
         }
 
@@ -93,6 +135,24 @@ namespace WebApplicationOrders.Controllers
                 dbContext.Entry(order1).State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
                 return Request.CreateResponse(HttpStatusCode.OK);
+            }
+        }
+
+        private bool ClientIsVip(int ClientNumber)
+        {
+            using (Orders_DBContext dbContext = new Orders_DBContext())
+            {
+                bool IsVip = false;
+                var clients = dbContext.Clients;
+                foreach (var client in clients)
+                {
+                    if (client.Number == ClientNumber)
+                    {
+                        IsVip = true;
+                    }
+
+                }
+                return IsVip;
             }
         }
     }

@@ -17,6 +17,6 @@ namespace WebApplicationOrders.Models
         public int Number { get; set; }
         public string Name { get; set; }
         public string Address { get; set; }
-        public Nullable<bool> Vip { get; set; }
+        public bool Vip { get; set; }
     }
 }
